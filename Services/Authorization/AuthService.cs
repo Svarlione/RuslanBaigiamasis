@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using RuslanAPI.DataLayer.Data;
 
 namespace RuslanAPI.Services.Authorization
 {
@@ -14,11 +16,13 @@ namespace RuslanAPI.Services.Authorization
     {
         private readonly IConfiguration _configuration;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly UserDbContext _dbContext;
 
-        public AuthService(IConfiguration configuration, IPasswordHasher<User> passwordHasher)
+        public AuthService(IConfiguration configuration, IPasswordHasher<User> passwordHasher, UserDbContext dbContext)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+            _dbContext = dbContext;
         }
 
         public async Task<string> LoginAsync(string userName, string password)
@@ -106,8 +110,11 @@ namespace RuslanAPI.Services.Authorization
         private async Task<User> FindUserByNameAsync(string userName)
         {
 
+            var existingUser = await _dbContext.Users
+                .Include(u => u.LoginInfo)
+                .FirstOrDefaultAsync(u => u.LoginInfo.UserName == userName);
 
-            return new User { LoginInfo = new LoginInfo { UserName = userName } };
+            return existingUser;
         }
 
         public byte[] GeneratePasswordSalt()

@@ -50,6 +50,7 @@ namespace RuslanAPI.Services.UserServices
         {
             if (userAddress.Id == 0)
             {
+                userAddress.UserId = userid;
                 _dbRepository.CreateAdress(userAddress);
             }
             else

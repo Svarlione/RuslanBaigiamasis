@@ -2,6 +2,7 @@
 using RuslanAPI.Core.DTO;
 using RuslanAPI.Core.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace RuslanAPI.Services.Mappers
 {
@@ -19,15 +20,11 @@ namespace RuslanAPI.Services.Mappers
                 LoginInfo = new LoginInfo()
                 {
                     UserName = "",
-                    Password = new byte[] { }, // Пароль оставлен незаполненным для обработки в слое авторизации
+                    Password = new byte[] { },
                     PasswordSalt = new byte[] { },
                     Role = "user"
-                },
-                Image = new Image()
-                {
-                    Name = "",
-                    ImageBytes = new byte[] { }
                 }
+
             };
         }
 
@@ -44,8 +41,8 @@ namespace RuslanAPI.Services.Mappers
                 PhoneNumber = updateUserDto.PhoneNumber,
                 LoginInfo = new LoginInfo()
                 {
-                    Password = updateUserDto.Password
-
+                    Password = Encoding.UTF8.GetBytes(updateUserDto.Password),
+                    //  Encoding.UTF8.GetBytes();
                 },
                 Adress = MapToUserAdressEntity(updateUserDto.Address),
                 Image = MapToImageEntity(updateUserDto.Image)

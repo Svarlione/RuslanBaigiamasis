@@ -23,21 +23,26 @@ namespace RuslanAPI.DataLayer.Data
             try
             {
                 if (user == null)
+
                     throw new ArgumentNullException(nameof(user), "User cannot be null.");
 
                 _userDbContext.Users.Add(user);
                 _userDbContext.SaveChanges();
 
                 if (user.Id <= 0)
+
                     throw new InvalidOperationException("User ID is invalid after creation.");
 
-                throw new ArgumentNullException(nameof(user), "Sucsses."); ;
+
             }
             catch (Exception ex)
             {
                 // Здесь можно добавить логирование ошибки или обработку исключения
                 throw new InvalidOperationException("An error occurred while saving the entity changes.", ex);
             }
+            return user.Id;
+            _userDbContext.Users.Add(user);
+            _userDbContext.SaveChanges();
         }
 
 

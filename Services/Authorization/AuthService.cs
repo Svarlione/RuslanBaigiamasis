@@ -5,6 +5,7 @@ using RuslanAPI.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 
 namespace RuslanAPI.Services.Authorization
 {
@@ -36,9 +37,9 @@ namespace RuslanAPI.Services.Authorization
             }
             catch (Exception ex)
             {
-                // Логируйте ошибку для последующего анализа
+
                 Console.WriteLine($"Error during login: {ex}");
-                throw; // Перевыбрасывайте исключение, чтобы обработка ошибок на уровне выше могла обработать их
+                throw;
             }
         }
 
@@ -53,7 +54,7 @@ namespace RuslanAPI.Services.Authorization
                     Role = role
                 };
 
-                // Ваши дополнительные действия при регистрации, например, сохранение в базу данных
+
 
                 var token = GenerateJwtToken(loginInfo);
 
@@ -61,9 +62,9 @@ namespace RuslanAPI.Services.Authorization
             }
             catch (Exception ex)
             {
-                // Логируйте ошибку для последующего анализа
+
                 Console.WriteLine($"Error during sign up: {ex}");
-                throw; // Перевыбрасывайте исключение, чтобы обработка ошибок на уровне выше могла обработать их
+                throw;
             }
         }
 
@@ -78,18 +79,35 @@ namespace RuslanAPI.Services.Authorization
             return result == PasswordVerificationResult.Success;
         }
 
-        private string GenerateJwtToken(LoginInfo loginInfo)
+        private string GenerateJwtToken(string username, string role, long loginInfoId)
         {
-            // Ваши текущие действия по генерации токена JWT
-            // ...
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, loginInfoId.ToString()),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role)
+            };
 
-            return "your_generated_token_here";
+            var secretKey = _configuration.GetSection("Jwt:Key").Value;
+            var issuer = _configuration.GetSection("Jwt:Issuer").Value;
+            var audience = _configuration.GetSection("Jwt:Audience").Value;
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: cred);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private async Task<User> FindUserByNameAsync(string userName)
         {
-            // Ваши текущие действия по поиску пользователя
-            // ...
+
 
             return new User { LoginInfo = new LoginInfo { UserName = userName } };
         }

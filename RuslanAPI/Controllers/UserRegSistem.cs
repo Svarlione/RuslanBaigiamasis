@@ -29,15 +29,15 @@ public class UserRegSistem : ControllerBase
     /// </summary>
     /// <param name="createUserDto">Данные пользователя для создания.</param>
     /// <returns>HTTP-статус 200 с идентификатором созданного пользователя или HTTP-статус 400 в случае ошибки.</returns>
-    [HttpPost("user/create")]
+    [HttpPost("user/Create")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult CreateUser([FromBody] CreateUserDto createUserDto)
     {
         try
         {
-            long userId = _userService.CreateUser(createUserDto);
-            return Ok(new { UserId = userId });
+            _userService.CreateUser(createUserDto);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -50,7 +50,7 @@ public class UserRegSistem : ControllerBase
     /// </summary>
     /// <param name="updateUserDto">Обновленные данные пользователя.</param>
     /// <returns>HTTP-статус 200 в случае успешного обновления или HTTP-статус 400 в случае ошибки.</returns>
-    [HttpPut("user/update")]
+    [HttpPut("userUpdate")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -68,7 +68,7 @@ public class UserRegSistem : ControllerBase
         }
     }
 
-    [HttpPost("address/create")]
+    [HttpPost("addressCreate")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,7 +88,7 @@ public class UserRegSistem : ControllerBase
         }
     }
 
-    [HttpPut("address/update")]
+    [HttpPut("addressUpdate")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -107,10 +107,10 @@ public class UserRegSistem : ControllerBase
         }
     }
 
-    [HttpPost("image/create")]
+    [HttpPost("imageCreate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult CreateImage([FromBody] ImageDto imageDto, long userId)
+    public IActionResult CreateImage([FromForm] ImageDto imageDto, long userId)
     {
         try
         {
@@ -124,7 +124,7 @@ public class UserRegSistem : ControllerBase
     }
 
 
-    [HttpPut("api/UserRegSistem/image/update/{id}")]
+    [HttpPut("image/update/{id}")]
     public IActionResult UpdateImage(int id, [FromBody] ImageUpdateDto imageUpdateDto)
     {
         try

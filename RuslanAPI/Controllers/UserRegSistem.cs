@@ -203,7 +203,9 @@ public class UserRegSistem : ControllerBase
     {
         try
         {
-            var token = await _authService.SignUpAsync(request.UserName, request.Role, request.Password);
+            byte[] salt = _authService.GeneratePasswordSalt();
+
+            var token = await _authService.SignUpAsync(request.UserName, request.Role, request.Password, salt);
             return Ok(new { Token = token });
         }
         catch (Exception ex)

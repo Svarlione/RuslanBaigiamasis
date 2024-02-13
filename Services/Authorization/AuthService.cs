@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.Security.Cryptography;
 
 namespace RuslanAPI.Services.Authorization
 {
@@ -30,8 +31,9 @@ namespace RuslanAPI.Services.Authorization
                 {
                     throw new InvalidOperationException("Invalid username or password.");
                 }
+                var role = "user";
+                var token = GenerateJwtToken(user.LoginInfo.UserName, role, user.Id);
 
-                var token = GenerateJwtToken(user.LoginInfo);
 
                 return token;
             }
@@ -43,7 +45,7 @@ namespace RuslanAPI.Services.Authorization
             }
         }
 
-        public async Task<string> SignUpAsync(string username, string role, string password)
+        public async Task<string> SignUpAsync(string username, string role, string password, byte[] passwordSalt)
         {
             try
             {
@@ -51,14 +53,9 @@ namespace RuslanAPI.Services.Authorization
                 {
                     UserName = username,
                     Password = HashPassword(password),
+                    PasswordSalt = passwordSalt,
                     Role = role
                 };
-
-
-
-                var token = GenerateJwtToken(loginInfo);
-
-                return token;
             }
             catch (Exception ex)
             {
@@ -66,6 +63,7 @@ namespace RuslanAPI.Services.Authorization
                 Console.WriteLine($"Error during sign up: {ex}");
                 throw;
             }
+            return await SignUpAsync(username, role, password, passwordSalt);
         }
 
         private byte[] HashPassword(string password)
@@ -110,6 +108,16 @@ namespace RuslanAPI.Services.Authorization
 
 
             return new User { LoginInfo = new LoginInfo { UserName = userName } };
+        }
+
+        public byte[] GeneratePasswordSalt()
+        {
+            byte[] salt = new byte[16];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+            return salt;
         }
     }
 

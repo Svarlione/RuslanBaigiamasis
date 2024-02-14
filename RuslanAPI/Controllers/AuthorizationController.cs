@@ -57,8 +57,10 @@ namespace _2._2012.IntroductionAPI.Controllers
             try
             {
                 byte[] salt = _authService.GeneratePasswordSalt();
+                string personalIndefication = request.PersonalIndefication;
+                string email = request.Email;
 
-                var token = await _authService.SignUpAsync(request.UserName, request.Role, request.Password, salt);
+                var token = await _authService.SignUpAsync(request.UserName, request.Role, request.Password, salt, personalIndefication, email);
                 return Ok(new { Token = token });
             }
             catch (Exception ex)

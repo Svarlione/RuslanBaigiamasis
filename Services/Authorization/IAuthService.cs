@@ -5,6 +5,6 @@ namespace RuslanAPI.Services.Authorization
     {
         byte[] GeneratePasswordSalt();
         Task<string> LoginAsync(string userName, string password);
-        Task<string> SignUpAsync(string username, string role, string password, byte[] passwordSalt);
+        Task<string> SignUpAsync(string username, string role, string password, byte[] passwordSalt, string personalIndefication, string email);
     }
 }

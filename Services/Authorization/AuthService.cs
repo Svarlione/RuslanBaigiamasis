@@ -9,6 +9,7 @@ using System.Data;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using RuslanAPI.DataLayer.Data;
+using RuslanAPI.Core.DTO;
 
 namespace RuslanAPI.Services.Authorization
 {
@@ -49,7 +50,7 @@ namespace RuslanAPI.Services.Authorization
             }
         }
 
-        public async Task<string> SignUpAsync(string username, string role, string password, byte[] passwordSalt)
+        public async Task<string> SignUpAsync(string username, string role, string password, byte[] passwordSalt, string personalIndefication, string email)
         {
             try
             {
@@ -59,6 +60,13 @@ namespace RuslanAPI.Services.Authorization
                     Password = HashPassword(password),
                     PasswordSalt = passwordSalt,
                     Role = role
+
+                };
+
+                var moreInfo = new SingUpDto
+                {
+                    PersonalIndefication = personalIndefication,
+                    Email = email,
                 };
             }
             catch (Exception ex)
@@ -67,7 +75,7 @@ namespace RuslanAPI.Services.Authorization
                 Console.WriteLine($"Error during sign up: {ex}");
                 throw;
             }
-            return await SignUpAsync(username, role, password, passwordSalt);
+            return await SignUpAsync(username, role, password, passwordSalt, personalIndefication, email);
         }
 
         private byte[] HashPassword(string password)

@@ -18,5 +18,15 @@ namespace RuslanAPI.Core.DTO
 
         [Required(ErrorMessage = "Роль обязательна")]
         public string Role { get; set; } = "user";
+
+        [Required(ErrorMessage = "Asmens kodas yra privalomas")]
+        public string PersonalIndefication { get; set; }
+
+        [Required(ErrorMessage = "El. paštas yra privalomas")]
+        [EmailAddress(ErrorMessage = "Netinkamas el. pašto formatas")]
+        public string Email { get; set; }
+
+
+
     }
 }

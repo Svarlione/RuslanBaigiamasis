@@ -12,18 +12,19 @@ namespace RuslanAPI.Services.Mappers
         {
             return new User()
             {
-                FirstName = createUserDto.FirstName,
-                LaststName = createUserDto.LaststName,
+
                 PersonalIndefication = createUserDto.PersonalIndefication,
                 Email = createUserDto.Email,
-                PhoneNumber = createUserDto.PhoneNumber,
+
                 LoginInfo = new LoginInfo()
                 {
                     UserName = "",
                     Password = new byte[] { },
                     PasswordSalt = new byte[] { },
                     Role = "user"
-                }
+                },
+
+
 
             };
         }

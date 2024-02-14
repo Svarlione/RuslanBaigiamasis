@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using RuslanAPI.DataLayer.Data;
 using RuslanAPI.Core.DTO;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace RuslanAPI.Services.Authorization
 {
@@ -60,7 +61,6 @@ namespace RuslanAPI.Services.Authorization
                     Password = HashPassword(password),
                     PasswordSalt = passwordSalt,
                     Role = role
-
                 };
 
                 var moreInfo = new SingUpDto
@@ -68,15 +68,47 @@ namespace RuslanAPI.Services.Authorization
                     PersonalIndefication = personalIndefication,
                     Email = email,
                 };
+
+                var user = CreateUser(username, password, passwordSalt, personalIndefication, email);
+                _dbContext.Users.Add(user);
+                await _dbContext.SaveChangesAsync();
+
+                return username;
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine($"Error during sign up: {ex}");
                 throw;
             }
-            return await SignUpAsync(username, role, password, passwordSalt, personalIndefication, email);
         }
+
+        private User CreateUser(string username, string password, byte[] passwordSalt, string personalIndefication, string email)
+        {
+            var loginInfo = new LoginInfo
+            {
+                UserName = username,
+                Password = HashPassword(password),
+                PasswordSalt = passwordSalt,
+                Role = "User"
+            };
+
+            var moreInfo = new SingUpDto
+            {
+                PersonalIndefication = personalIndefication,
+                Email = email,
+            };
+
+            var user = new User
+            {
+                LoginInfo = loginInfo,
+                PersonalIndefication = moreInfo.PersonalIndefication,
+                Email = moreInfo.Email
+            };
+
+            return user;
+        }
+
+
 
         private byte[] HashPassword(string password)
         {

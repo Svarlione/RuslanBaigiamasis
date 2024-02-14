@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RuslanAPI.Core.DTO;
 using RuslanAPI.Core.Models;
@@ -6,6 +7,7 @@ using RuslanAPI.Services.Authorization;
 using RuslanAPI.Services.Mappers;
 using RuslanAPI.Services.UserServices;
 using System.Net.Mime;
+using System.Security.Claims;
 
 /// <summary>
 /// Контроллер для управления пользователями в системе регистрации.
@@ -17,33 +19,35 @@ public class UserRegSistem : ControllerBase
     private readonly IUserService _userService;
     private readonly IUserMapper _userMapper;
     private readonly IAuthService _authService;
-    public UserRegSistem(IUserService userService, IUserMapper userMapper, IAuthService authService)
+    private readonly long userId;
+    public UserRegSistem(IUserService userService, IUserMapper userMapper, IAuthService authService, IHttpContextAccessor accessor)
     {
         _userService = userService;
         _userMapper = userMapper;
         _authService = authService;
+        userId = long.Parse(accessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 
-    /// <summary>
-    /// Создает нового пользователя.
-    /// </summary>
-    /// <param name="createUserDto">Данные пользователя для создания.</param>
-    /// <returns>HTTP-статус 200 с идентификатором созданного пользователя или HTTP-статус 400 в случае ошибки.</returns>
-    [HttpPost("user/Create")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult CreateUser([FromBody] CreateUserDto createUserDto)
-    {
-        try
-        {
-            _userService.CreateUser(createUserDto);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ErrorMessage = ex.Message });
-        }
-    }
+    ///// <summary>
+    ///// Создает нового пользователя.
+    ///// </summary>
+    ///// <param name="createUserDto">Данные пользователя для создания.</param>
+    ///// <returns>HTTP-статус 200 с идентификатором созданного пользователя или HTTP-статус 400 в случае ошибки.</returns>
+    //[HttpPost("user/Create")]
+    //[ProducesResponseType(StatusCodes.Status200OK)]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+    //public IActionResult CreateUser([FromBody] CreateUserDto createUserDto)
+    //{
+    //    try
+    //    {
+    //        _userService.CreateUser(createUserDto);
+    //        return Ok();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(new { ErrorMessage = ex.Message });
+    //    }
+    //}
 
     /// <summary>
     /// Обновляет информацию о пользователе.
@@ -55,7 +59,7 @@ public class UserRegSistem : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult UpdateUser([FromBody] UpdateUserDto updateUserDto, long userId)
+    public IActionResult UpdateUser([FromBody] UpdateUserDto updateUserDto)
     {
         try
         {
@@ -73,7 +77,7 @@ public class UserRegSistem : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult CreateUserAddress([FromBody] AdressDto userAddressDto, long userId)
+    public IActionResult CreateUserAddress([FromBody] AdressDto userAddressDto)
     {
         try
         {
@@ -93,7 +97,7 @@ public class UserRegSistem : ControllerBase
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult UpdateUserAddress([FromBody] AdressDto userAddressDto, long userId)
+    public IActionResult UpdateUserAddress([FromBody] AdressDto userAddressDto)
     {
         try
         {
@@ -110,7 +114,7 @@ public class UserRegSistem : ControllerBase
     [HttpPost("imageCreate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult CreateImage([FromForm] ImageDto imageDto, long userId)
+    public IActionResult CreateImage([FromForm] ImageDto imageDto)
     {
         try
         {
@@ -173,44 +177,4 @@ public class UserRegSistem : ControllerBase
         }
     }
 
-    [HttpPost("login")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Login([FromBody] LoginInfoDto request)
-    {
-        try
-        {
-            // Преобразовать пароль из byte[] в строку
-            string password = request.Password;
-
-            var token = await _authService.LoginAsync(request.UserName, password);
-            return Ok(new { Token = token });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ErrorMessage = ex.Message });
-        }
-    }
-
-    [HttpPost("signup")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SignUp([FromBody] SingUpDto request)
-    {
-        try
-        {
-            byte[] salt = _authService.GeneratePasswordSalt();
-
-            var token = await _authService.SignUpAsync(request.UserName, request.Role, request.Password, salt);
-            return Ok(new { Token = token });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ErrorMessage = ex.Message });
-        }
-    }
 }

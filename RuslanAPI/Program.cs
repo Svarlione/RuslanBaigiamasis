@@ -26,6 +26,7 @@ namespace RuslanAPI
             builder.Services.AddScoped<IDbRepository, DbRepository>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
+            builder.Services.AddHttpContextAccessor();
             // uzregistravimo servisa i DI arba IoC (dipendency injection)
             //builder.Services.AddScoped<ITodoRepository, TodoRepository>();
             //builder.Services.AddScoped<IToDoEmailService, ToDoEmailService>();

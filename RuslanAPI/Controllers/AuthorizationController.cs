@@ -12,13 +12,13 @@ namespace _2._2012.IntroductionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AututhController : ControllerBase
+    public class AuthorizationController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IUserMapper _userMapper;
         private readonly IAuthService _authService;
 
-        public AututhController(IUserService userService, IUserMapper userMapper, IAuthService authService)
+        public AuthorizationController(IUserService userService, IUserMapper userMapper, IAuthService authService)
         {
             _userService = userService;
             _userMapper = userMapper;
@@ -83,5 +83,7 @@ namespace _2._2012.IntroductionAPI.Controllers
                 return BadRequest(new { ErrorMessage = ex.Message });
             }
         }
+
+
     }
 }

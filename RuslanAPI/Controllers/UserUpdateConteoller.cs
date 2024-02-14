@@ -14,13 +14,13 @@ using System.Security.Claims;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class UserRegSistem : ControllerBase
+public class UserUpdateConteoller : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IUserMapper _userMapper;
     private readonly IAuthService _authService;
     private readonly long userId;
-    public UserRegSistem(IUserService userService, IUserMapper userMapper, IAuthService authService, IHttpContextAccessor accessor)
+    public UserUpdateConteoller(IUserService userService, IUserMapper userMapper, IAuthService authService, IHttpContextAccessor accessor)
     {
         _userService = userService;
         _userMapper = userMapper;
@@ -143,22 +143,6 @@ public class UserRegSistem : ControllerBase
     }
 
 
-    [HttpDelete("user/delete/{userId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Authorize(Roles = "Administrator")]
-    public IActionResult DeleteUser(long userId)
-    {
-        try
-        {
-            _userService.DeleteUser(userId);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ErrorMessage = ex.Message });
-        }
-    }
 
     [HttpGet("user/{userId}")]
     [Produces(MediaTypeNames.Application.Json)]

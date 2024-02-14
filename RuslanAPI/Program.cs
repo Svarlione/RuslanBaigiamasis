@@ -57,7 +57,7 @@ namespace RuslanAPI
                 {
                     In = ParameterLocation.Header,
                     Description = "Please ender valid JWT token",
-                    Name = "Authorization",
+                    Name = "AuthorizationController",
                     Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT"

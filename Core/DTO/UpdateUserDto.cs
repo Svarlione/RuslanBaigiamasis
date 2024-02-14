@@ -7,10 +7,6 @@ namespace RuslanAPI.Core.DTO
         [EmailAddress(ErrorMessage = "Netinkamas el. pašto formatas")]
         public string Email { get; set; }
 
-        public AdressDto? Address { get; set; }
-
-        public ImageDto? Image { get; set; }
-
         [RegularExpression(@"^\d{9}$", ErrorMessage = "Netinkamas telefono numerio formatas")]
         public string PhoneNumber { get; set; }
 

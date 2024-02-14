@@ -45,8 +45,8 @@ namespace RuslanAPI.Services.Mappers
                     Password = Encoding.UTF8.GetBytes(updateUserDto.Password),
                     //  Encoding.UTF8.GetBytes();
                 },
-                Adress = MapToUserAdressEntity(updateUserDto.Address),
-                Image = MapToImageEntity(updateUserDto.Image)
+
+
             };
         }
 

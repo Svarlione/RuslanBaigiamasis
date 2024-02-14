@@ -35,17 +35,17 @@ namespace RuslanAPI.Services.Authorization
 
                 if (user == null || !VerifyPassword(user.LoginInfo, password))
                 {
+                    Console.WriteLine($"Invalid username or password for user: {userName}");
                     throw new InvalidOperationException("Invalid username or password.");
                 }
+
                 var role = "user";
                 var token = GenerateJwtToken(user.LoginInfo.UserName, role, user.Id);
-
 
                 return token;
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine($"Error during login: {ex}");
                 throw;
             }
@@ -109,17 +109,21 @@ namespace RuslanAPI.Services.Authorization
         }
 
 
-
         private byte[] HashPassword(string password)
         {
-            return Encoding.UTF8.GetBytes(_passwordHasher.HashPassword(null, password));
+            string hashedPassword = _passwordHasher.HashPassword(null, password);
+            return Encoding.UTF8.GetBytes(hashedPassword);
         }
 
         private bool VerifyPassword(LoginInfo loginInfo, string password)
         {
-            var result = _passwordHasher.VerifyHashedPassword(null, Convert.ToBase64String(loginInfo.Password), password);
+            string hashedPassword = Encoding.UTF8.GetString(loginInfo.Password);
+            var result = _passwordHasher.VerifyHashedPassword(null, hashedPassword, password);
             return result == PasswordVerificationResult.Success;
         }
+
+
+
 
         private string GenerateJwtToken(string username, string role, long loginInfoId)
         {

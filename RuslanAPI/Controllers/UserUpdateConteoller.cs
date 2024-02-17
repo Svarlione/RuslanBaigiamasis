@@ -76,25 +76,25 @@ public class UserUpdateConteoller : ControllerBase
         }
     }
 
-    //[HttpPost("addressCreate")]
-    //[Produces(MediaTypeNames.Application.Json)]
-    //[Consumes(MediaTypeNames.Application.Json)]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public IActionResult CreateUserAddress([FromBody] AdressDto userAddressDto)
-    //{
-    //    try
-    //    {
-    //        UserAdress userAddress = _userMapper.MapToUserAdressEntity(userAddressDto);
-    //        _userService.CreateUserAddress(userAddress/*, userId*/);
-    //        return Ok();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine(ex.ToString());
-    //        return BadRequest(new { ErrorMessage = ex.Message });
-    //    }
-    //}
+    [HttpPost("addressCreate")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult CreateUserAddress([FromBody] AdressDto userAddressDto)//rabotaet
+    {
+        try
+        {
+            UserAdress userAddress = _userMapper.MapToUserAdressEntity(userAddressDto);
+            _userService.CreateUserAddress(userAddress, userId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return BadRequest(new { ErrorMessage = ex.Message });
+        }
+    }
 
     [HttpPut("addressUpdate")]
     [Produces(MediaTypeNames.Application.Json)]
@@ -115,29 +115,29 @@ public class UserUpdateConteoller : ControllerBase
         }
     }
 
-    //[HttpPost("imageCreate")]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public IActionResult CreateImage([FromForm] ImageDto imageDto)
-    //{
-    //    try
-    //    {
-    //        _userService.CreateImage(imageDto, userId);
-    //        return Ok();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(new { ErrorMessage = ex.Message });
-    //    }
-    //}
-
-
-    [HttpPut("image/update/{id}")]
-    public IActionResult UpdateImage(int id, [FromForm] ImageUpdateDto imageUpdateDto)
+    [HttpPost("imageCreate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult CreateImage([FromForm] ImageDto imageDto)
     {
         try
         {
-            _userService.UpdateImage(imageUpdateDto, id);
+            _userService.CreateImage(imageDto, userId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { ErrorMessage = ex.Message });
+        }
+    }
+
+
+    [HttpPut("image/update")]
+    public IActionResult UpdateImage([FromForm] ImageUpdateDto imageUpdateDto)
+    {
+        try
+        {
+            _userService.UpdateImage(imageUpdateDto,userId);
             return Ok();
         }
         catch (Exception ex)
@@ -148,21 +148,21 @@ public class UserUpdateConteoller : ControllerBase
 
 
 
-    //[HttpGet("user/{userId}")]
-    //[Produces(MediaTypeNames.Application.Json)]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public IActionResult GetUserByUserId(long userId)
-    //{
-    //    try
-    //    {
-    //        var user = _userService.GetUserByUserId(userId);
-    //        return Ok(user);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(new { ErrorMessage = ex.Message });
-    //    }
-    //}
+    [HttpGet("user")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetUserByUserId()//rabotaet
+    {
+        try
+        {
+            var user = _userService.GetUserByUserId(userId);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { ErrorMessage = ex.Message });
+        }
+    }
 
 }

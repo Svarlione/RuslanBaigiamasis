@@ -31,7 +31,7 @@ namespace _2._2012.IntroductionAPI.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromBody] LoginInfoDto request)
+        public async Task<IActionResult> Login([FromBody] LoginInfoDto request)//rabotaet
         {
             try
             {
@@ -52,7 +52,7 @@ namespace _2._2012.IntroductionAPI.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SignUp([FromBody] SingUpDto request)
+        public async Task<IActionResult> SignUp([FromBody] SingUpDto request)//rabotaet
         {
             try
             {
@@ -73,7 +73,7 @@ namespace _2._2012.IntroductionAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Administrator")]
-        public IActionResult DeleteUser(long userId)
+        public IActionResult DeleteUser(long userId)// ne poniatno
         {
             try
             {
